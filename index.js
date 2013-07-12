@@ -4,13 +4,42 @@ var fs = require('fs'),
 module.exports = fileStream;
 
 function fileStream() {
-  var tr = through(write, end);
+  var tr = through(write, end),
+      file = null,
+      opened = 0;
 
   function write(buf) {
-    var line = 0;
+    opened++;
+    var line = 0,
+        filename = buf.toString();
+    file = fs.createReadStream(filename);
+    
+    file.on('data', function (data) {
+
+      var fileObject = {
+        filename: filename,
+        line: line,
+        data: data
+      };
+
+      tr.queue(fileObject);
+      line++;
+
+    });
+
+    file.on('end', function () {
+      opened--;
+      if (!opened) { tr.queue(null); }
+    });
   }
 
   function end() {
-    
+    if (!opened) {
+      tr.queue(null);
+    }
   }
+
+  return tr;
+
 }
+
