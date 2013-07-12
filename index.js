@@ -10,7 +10,7 @@ function fileStream() {
 
   function write(buf) {
     opened++;
-    var line = 0,
+    var line = 1,
         filename = buf.toString();
     file = fs.createReadStream(filename);
     
