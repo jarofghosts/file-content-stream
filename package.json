@@ -22,7 +22,6 @@
     "url": "https://github.com/jarofghosts/file-content-stream/issues"
   },
   "dependencies": {
-    "through": "~2.3.4",
-    "dir-stream": "0.0.0"
+    "through": "~2.3.4"
   }
 }
