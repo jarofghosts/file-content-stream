@@ -6,8 +6,27 @@ var assert = require('assert'),
     rs = Readable(),
     a = Writable({ decodeStrings: false, objectMode: true });
 
-a._write = function (line, enc, next) {
-  console.log(line);
+a._write = function (data, enc, next) {
+  switch (data.line) {
+    case 1:
+      assert.equal(data.data, 'hey');
+      break;
+    case 2:
+      assert.equal(data.data, 'wooo');
+      break;
+    case 3:
+      assert.equal(data.data, 'bleee');
+      break;
+    case 4:
+      assert.equal(data.data, 'scrawww');
+      break;
+    case 5:
+      assert.equal(data.data, 'boooooooo');
+      break;
+    case 6:
+      assert.ok(false);
+      break;
+  }
   next();
 }
 
