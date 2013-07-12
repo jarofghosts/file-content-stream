@@ -34,6 +34,9 @@ function fileStream() {
       opened--;
       if (!opened) tr.queue(null);
     });
+    file.on('error', function () {
+      // no-op
+    });
   }
 
   function end() {
