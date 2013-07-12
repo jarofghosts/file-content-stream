@@ -1,0 +1,24 @@
+{
+  "name": "file-content-stream",
+  "version": "0.0.0",
+  "description": "stream file contents",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jarofghosts/file-content-stream.git"
+  },
+  "keywords": [
+    "file",
+    "stream",
+    "contents",
+    "utility"
+  ],
+  "author": "jesse keane",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jarofghosts/file-content-stream/issues"
+  }
+}
