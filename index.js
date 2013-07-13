@@ -7,13 +7,11 @@ module.exports = fileStream;
 function fileStream() {
   var tr = through(write, end),
       file = null,
-      opened = 0;
+      files = [];
 
-  function write(buf) {
-    opened++;
+  function processFile(filename) {
     var line = 1,
-        filename = buf.toString();
-    file = fs.createReadStream(filename).pipe(split());
+        file = fs.createReadStream(filename).pipe(split());
     
     file.on('data', function (data) {
 
@@ -27,20 +25,28 @@ function fileStream() {
 
       tr.queue(fileObject);
       line++;
-
     });
 
     file.on('end', function () {
-      opened--;
-      if (!opened) tr.queue(null);
+      if (!files.length) {
+        tr.queue(null);
+      } else {
+        processFile(files.shift());
+      }
     });
     file.on('error', function () {
       // no-op
     });
+
+ }
+
+  function write(buf) {
+    files.push(buf.toString());
+    if (!file) processFile(files.shift());
   }
 
   function end() {
-    if (!opened) tr.queue(null);
+    if (!files.length) tr.queue(null);
   }
 
   return tr;
