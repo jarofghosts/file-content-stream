@@ -15,7 +15,7 @@ function fileStream() {
     
     file.on('data', function (data) {
 
-      if (!data) return
+      if (!data) return;
 
       var fileObject = {
         filename: filename,
@@ -24,6 +24,7 @@ function fileStream() {
       };
 
       tr.queue(fileObject);
+
       line++;
     });
 
