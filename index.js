@@ -29,9 +29,7 @@ function fileStream() {
     });
 
     file.on('end', function () {
-      if (!files.length) {
-        tr.queue(null);
-      } else {
+      if (files.length) {
         processFile(files.shift());
       }
     });
@@ -47,6 +45,7 @@ function fileStream() {
   }
 
   function end() {
+    // we don't want through's default end()
   }
 
   return tr;
