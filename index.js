@@ -4,7 +4,10 @@ var fs = require('fs'),
 
 module.exports = fileStream;
 
-function fileStream() {
+function fileStream(options) {
+  
+  options = options || {};
+
   var tr = through(write, end),
       file = null,
       go = true,
@@ -21,7 +24,7 @@ function fileStream() {
       var fileObject = {
         filename: filename,
         line: line,
-        data: data.toString()
+        data: data
       };
 
       tr.queue(fileObject);
