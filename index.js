@@ -7,6 +7,7 @@ module.exports = fileStream;
 function fileStream() {
   var tr = through(write, end),
       file = null,
+      go = true,
       files = [];
 
   function processFile(filename) {
@@ -41,7 +42,10 @@ function fileStream() {
 
   function write(buf) {
     files.push(buf.toString());
-    if (!file) processFile(files.shift());
+    if (go) {
+      go = false;
+      processFile(files.shift());
+    }
   }
 
   function end() {
