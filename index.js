@@ -47,7 +47,6 @@ function fileStream() {
   }
 
   function end() {
-    if (!files.length) tr.queue(null);
   }
 
   return tr;
