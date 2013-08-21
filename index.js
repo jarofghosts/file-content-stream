@@ -33,9 +33,7 @@ function fileStream(options) {
     });
 
     file.on('end', function () {
-      if (files.length) {
-        processFile(files.shift());
-      }
+      if (files.length) processFile(files.shift());
     });
     file.on('error', function () {
       // no-op
