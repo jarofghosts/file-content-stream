@@ -8,6 +8,7 @@ var assert = require('assert'),
     badTime;
 
 a._write = function (data, enc, next) {
+  console.dir(data);
   if (data.filename.match(/file2/)) clearTimeout(badTime);
   switch (data.line) {
     case 1:
