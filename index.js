@@ -10,7 +10,6 @@ function fileStream(options) {
 
   var tr = through(write, end),
       file = null,
-      go = true,
       files = [];
 
   function processFile(filename) {
@@ -43,10 +42,7 @@ function fileStream(options) {
 
   function write(buf) {
     files.push(buf.toString());
-    if (go) {
-      go = false;
-      processFile(files.shift());
-    }
+    file == null && processFile(files.shift());
   }
 
   function end() {
