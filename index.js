@@ -24,7 +24,7 @@ function fileStream(options) {
 
     function onData(data) {
 
-      if (!data) return;
+      if (!data) return ++line;
 
       var fileObject = {
         filename: filename,
