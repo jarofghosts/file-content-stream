@@ -12,6 +12,8 @@ function fileStream(options) {
       file = null,
       files = [];
 
+  return tr;
+
   function processFile(filename) {
     var line = 1,
         file = fs.createReadStream(filename).pipe(split());
@@ -48,6 +50,5 @@ function fileStream(options) {
   }
 
   function noop() {}
-  return tr;
 }
 
