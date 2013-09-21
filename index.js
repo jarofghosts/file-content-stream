@@ -8,17 +8,23 @@ function fileStream(options) {
   
   options = options || {};
 
-  var tr = through(write, end),
+  var tr = through(write, noop),
       file = null,
       files = [];
+
+  return tr;
 
   function processFile(filename) {
     var line = 1,
         file = fs.createReadStream(filename).pipe(split());
     
-    file.on('data', function (data) {
+    file.on('data', onData);
+    file.on('end', onEnd);
+    file.on('error', noop);
 
-      if (!data) return;
+    function onData(data) {
+
+      if (!data) return ++line;
 
       var fileObject = {
         filename: filename,
@@ -29,14 +35,12 @@ function fileStream(options) {
       tr.queue(fileObject);
 
       line++;
-    });
 
-    file.on('end', function () {
+    }
+
+    function onEnd() {
       if (files.length) processFile(files.shift());
-    });
-    file.on('error', function () {
-      // no-op
-    });
+    }
 
  }
 
@@ -47,11 +51,6 @@ function fileStream(options) {
     processFile(files.shift());
   }
 
-  function end() {
-    // we don't want through's default end()
-  }
-
-  return tr;
-
+  function noop() {}
 }
 
