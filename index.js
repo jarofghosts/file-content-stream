@@ -42,7 +42,9 @@ function fileStream(options) {
 
   function write(buf) {
     files.push(buf.toString());
-    file == null && processFile(files.shift());
+    if (file != null) return;
+    file = true;
+    processFile(files.shift());
   }
 
   function end() {
