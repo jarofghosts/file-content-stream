@@ -1,6 +1,6 @@
 {
   "name": "file-content-stream",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "stream file contents",
   "main": "index.js",
   "scripts": {
