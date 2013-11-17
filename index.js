@@ -23,18 +23,17 @@ function fileStream(options) {
     file.on('error', noop)
 
     function onData(data) {
+      line++
 
-      if (!data) return ++line
+      if (!data) return
 
       var fileObject = {
         filename: filename,
-        line: line,
+        line: line - 1,
         data: data
       }
 
       tr.queue(fileObject)
-
-      line++
 
     }
 
