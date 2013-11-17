@@ -34,7 +34,6 @@ function fileStream(options) {
       }
 
       tr.queue(fileObject)
-
     }
 
     function onEnd() {
