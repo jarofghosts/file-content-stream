@@ -5,17 +5,23 @@ var fs = require('fs'),
 module.exports = fileStream
 
 function fileStream(options) {
-
-  options = options || {}
-
   var tr = through(write, noop),
       file = null,
       files = []
 
+  options = options || {}
+
   return tr
 
+  function write(buf) {
+    files.push(buf.toString())
+    if (file != null) return
+    file = true
+    processFile(files.shift())
+  }
+
   function processFile(filename) {
-    var line = 1,
+    var line = 0,
         file = fs.createReadStream(filename).pipe(split())
     
     file.on('data', onData)
@@ -29,7 +35,7 @@ function fileStream(options) {
 
       var fileObject = {
         filename: filename,
-        line: line - 1,
+        line: line,
         data: data
       }
 
@@ -37,16 +43,10 @@ function fileStream(options) {
     }
 
     function onEnd() {
-      if (files.length) processFile(files.shift())
+      if (files.length) return processFile(files.shift())
+      tr.queue(null)
     }
- }
-
-  function write(buf) {
-    files.push(buf.toString())
-    if (file != null) return
-    file = true
-    processFile(files.shift())
   }
-
-  function noop() {}
 }
+
+function noop() {}
