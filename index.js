@@ -4,12 +4,10 @@ var fs = require('fs'),
 
 module.exports = fileStream
 
-function fileStream(options) {
+function fileStream() {
   var tr = through(write, noop),
       file = null,
       files = []
-
-  options = options || {}
 
   return tr
 
@@ -41,11 +39,11 @@ function fileStream(options) {
 
       tr.queue(fileObject)
     }
+  }
 
-    function onEnd() {
-      if (files.length) return processFile(files.shift())
-      tr.queue(null)
-    }
+  function onEnd() {
+    if (files.length) return processFile(files.shift())
+    tr.queue(null)
   }
 }
 
