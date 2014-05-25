@@ -6,15 +6,15 @@ var through = require('through')
 module.exports = fileStream
 
 function fileStream() {
-  var tr = through(write, noop)
+  var tr = through(write, on_end)
     , processing = false
     , files = []
 
   return tr
 
   function write(buf) {
-    files.push(buf.toString())
-    if (processing) return
+    files.push('' + buf)
+    if(processing) return
 
     processing = true
     process_file(files.shift())
@@ -22,17 +22,18 @@ function fileStream() {
 
   function process_file(filename) {
     var file = fs.createReadStream(filename).pipe(split())
+      , line = 0
 
-    var line = 0
-    
     file.on('data', on_data)
     file.on('end', on_end)
-    file.on('error', noop)
+    file.on('error', function(err) {
+      tr.emit('error', err)
+    })
 
     function on_data(data) {
       line++
 
-      if (!data) return
+      if(!data) return
 
       var fileObject = {
           filename: filename
@@ -45,10 +46,8 @@ function fileStream() {
   }
 
   function on_end() {
-    if (files.length) return process_file(files.shift())
+    if(!processing || !files.length) return tr.queue(null)
 
-    tr.queue(null)
+    process_file(files.shift())
   }
 }
-
-function noop() {}
