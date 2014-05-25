@@ -6,7 +6,7 @@ var through = require('through')
 module.exports = fileStream
 
 function fileStream() {
-  var tr = through(write, on_end)
+  var tr = through(write, end)
     , processing = false
     , files = []
 
@@ -45,8 +45,12 @@ function fileStream() {
     }
   }
 
+  function end() {
+    if(!processing) tr.queue(null)
+  }
+
   function on_end() {
-    if(!processing || !files.length) return tr.queue(null)
+    if(!files.length) return tr.queue(null)
 
     process_file(files.shift())
   }
