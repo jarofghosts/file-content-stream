@@ -6,31 +6,31 @@ var through = require('through')
 module.exports = fileStream
 
 function fileStream() {
-  var tr = through(write, end)
+  var stream = through(write, end)
     , processing = false
     , files = []
 
-  return tr
+  return stream
 
   function write(buf) {
     files.push('' + buf)
     if(processing) return
 
     processing = true
-    process_file(files.shift())
+    processFile(files.shift())
   }
 
-  function process_file(filename) {
+  function processFile(filename) {
     var file = fs.createReadStream(filename).pipe(split())
       , line = 0
 
-    file.on('data', on_data)
-    file.on('end', on_end)
+    file.on('data', onData)
+    file.on('end', onEnd)
     file.on('error', function(err) {
-      tr.emit('error', err)
+      stream.emit('error', err)
     })
 
-    function on_data(data) {
+    function onData(data) {
       line++
 
       if(!data) return
@@ -41,17 +41,17 @@ function fileStream() {
         , data: data
       }
 
-      tr.queue(fileObject)
+      stream.queue(fileObject)
     }
   }
 
   function end() {
-    if(!processing) tr.queue(null)
+    if(!processing) stream.queue(null)
   }
 
-  function on_end() {
-    if(!files.length) return tr.queue(null)
+  function onEnd() {
+    if(!files.length) return stream.queue(null)
 
-    process_file(files.shift())
+    processFile(files.shift())
   }
 }
