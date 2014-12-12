@@ -18,7 +18,7 @@ test('streams file contents', function(t) {
 
   stream.on('end', check)
 
-  function check(data) {
+  function check() {
     t.deepEqual([1, 2, 3, 4, 5, 1, 2], lines)
     t.deepEqual([
         'hey'
@@ -33,4 +33,40 @@ test('streams file contents', function(t) {
 
   stream.write(path.join(__dirname, 'testfile'))
   stream.write(path.join(__dirname, 'sub', 'file2'))
+  stream.end()
+})
+
+test('deals with stream ending correctly', function(t) {
+  t.plan(2)
+
+  var stream = fileStream()
+    , lines = []
+    , text = []
+
+  stream.on('data', function(data) {
+    lines.push(data.line)
+    text.push(data.data)
+  })
+
+  stream.on('end', check)
+
+  function check() {
+    t.deepEqual([1, 2, 3, 4, 5, 1, 2], lines)
+    t.deepEqual([
+        'hey'
+      , 'wooo'
+      , 'bleee'
+      , 'scrawww'
+      , 'boooooooo'
+      , 'haha'
+      , 'hey, now!'
+    ], text)
+  }
+
+  stream.write(path.join(__dirname, 'testfile'))
+
+  process.nextTick(function() {
+    stream.write(path.join(__dirname, 'sub', 'file2'))
+    stream.end()
+  })
 })

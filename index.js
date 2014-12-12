@@ -8,6 +8,7 @@ module.exports = fileStream
 function fileStream() {
   var stream = through(write, end)
     , processing = false
+    , finished = false
     , files = []
 
   return stream
@@ -21,6 +22,8 @@ function fileStream() {
   }
 
   function processFile(filename) {
+    if(!filename) return
+
     var file = fs.createReadStream(filename).pipe(split())
       , line = 0
 
@@ -47,10 +50,11 @@ function fileStream() {
 
   function end() {
     if(!processing) stream.queue(null)
+    finished = true
   }
 
   function onEnd() {
-    if(!files.length) return stream.queue(null)
+    if(!files.length && finished) return stream.queue(null)
 
     processFile(files.shift())
   }
