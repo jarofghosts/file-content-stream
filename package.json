@@ -22,10 +22,10 @@
     "url": "https://github.com/jarofghosts/file-content-stream/issues"
   },
   "dependencies": {
-    "through": "^2.3.4",
-    "split": "^0.2.6"
+    "split": "^0.3.3",
+    "through2": "^0.6.3"
   },
   "devDependencies": {
-    "tape": "^2.13.1"
+    "tape": "^3.5.0"
   }
 }
