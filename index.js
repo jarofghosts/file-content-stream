@@ -1,22 +1,22 @@
 var fs = require('fs')
 
 var through = require('through2')
-  , split = require('split')
+var split = require('split')
 
 module.exports = fileStream
 
-function fileStream(splitOn) {
+function fileStream (splitOn) {
   var stream = through.obj(write, end)
-    , processing = false
-    , finished = false
-    , files = []
+  var processing = false
+  var finished = false
+  var files = []
 
   return stream
 
-  function write(buf, enc, next) {
+  function write (buf, enc, next) {
     files.push(buf.toString())
 
-    if(processing) {
+    if (processing) {
       return next()
     }
 
@@ -26,47 +26,47 @@ function fileStream(splitOn) {
     next()
   }
 
-  function processFile(filename) {
-    if(!filename) {
+  function processFile (filename) {
+    if (!filename) {
       return
     }
 
     var file = fs.createReadStream(filename).pipe(split(splitOn))
-      , chunk = 0
+    var chunk = 0
 
     file.on('data', onData)
     file.on('end', onEnd)
-    file.on('error', function(err) {
+    file.on('error', function (err) {
       stream.emit('error', err)
     })
 
-    function onData(data) {
+    function onData (data) {
       chunk++
 
-      if(!data) {
+      if (!data) {
         return
       }
 
       var fileObject = {
-          filename: filename
-        , chunk: chunk
-        , data: data
+        filename: filename,
+        chunk: chunk,
+        data: data
       }
 
       stream.push(fileObject)
     }
   }
 
-  function end() {
-    if(!processing) {
+  function end () {
+    if (!processing) {
       stream.push(null)
     }
 
     finished = true
   }
 
-  function onEnd() {
-    if(!files.length && finished) {
+  function onEnd () {
+    if (!files.length && finished) {
       return stream.push(null)
     }
 
